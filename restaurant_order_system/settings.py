@@ -10,7 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import warnings
 from pathlib import Path
+
+# Suppress the pkg_resources deprecation warning
+warnings.filterwarnings("ignore", message=".*pkg_resources is deprecated.*")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-%djo)s81etj5xocu%5lk6nr7*3p-y0y&0yxxiu&((_dh)00b4h"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -42,9 +46,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_yasg',
+    'django_filters',
     
     # Local apps
-    'accounts',
+    'accounts.apps.AccountsConfig',
     'menu',
     'orders',
 ]
@@ -64,7 +69,7 @@ ROOT_URLCONF = "restaurant_order_system.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / 'templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -126,6 +131,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / 'static'
+
+# Enable this for development
+DEBUG = True
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -143,6 +152,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ],
 }
 
 # JWT Settings
@@ -156,3 +168,19 @@ SIMPLE_JWT = {
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Swagger/OpenAPI settings
+SWAGGER_SETTINGS = {
+    'DEFAULT_INFO': 'restaurant_order_system.urls.openapi_info',
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    },
+    'USE_SESSION_AUTH': False,
+    'PERSIST_AUTH': True,
+    'REFETCH_SCHEMA_WITH_AUTH': True,
+    'REFETCH_SCHEMA_ON_LOGOUT': True,
+}

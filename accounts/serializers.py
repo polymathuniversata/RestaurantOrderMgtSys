@@ -56,13 +56,13 @@ class RestaurantProfileSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Restaurant
-        fields = ('id', 'email', 'name', 'location', 'phone_number', 'created_at', 'updated_at')
-        read_only_fields = ('id', 'created_at', 'updated_at')
+        fields = ('user', 'email', 'name', 'location', 'phone_number', 'created_at', 'updated_at')
+        read_only_fields = ('user', 'created_at', 'updated_at')
 
 class CustomerProfileSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(source='user.email', read_only=True)
     
     class Meta:
         model = Customer
-        fields = ('id', 'email', 'phone_number', 'address', 'created_at', 'updated_at')
-        read_only_fields = ('id', 'created_at', 'updated_at')
+        fields = ('user', 'email', 'phone_number', 'address', 'created_at', 'updated_at')
+        read_only_fields = ('user', 'created_at', 'updated_at')

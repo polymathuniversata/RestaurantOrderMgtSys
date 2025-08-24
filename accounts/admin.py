@@ -32,9 +32,6 @@ class CustomerAdmin(admin.ModelAdmin):
     search_fields = ('user__email', 'phone_number')
     list_filter = ('created_at',)
 
-# Unregister the default UserAdmin
-admin.site.unregister(User)
-
 # Register your custom UserAdmin
 admin.site.register(User, UserAdminConfig)
 admin.site.register(Restaurant, RestaurantAdmin)
